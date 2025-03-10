@@ -5,6 +5,7 @@ import com.example.demo.DTO.AuthRequest;
 import com.example.demo.DTO.AuthResponse;
 import com.example.demo.DTO.RegisterRequest;
 import com.example.demo.Repository.UserRepository;
+import com.example.demo.Utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +20,7 @@ public class AuthService {
     private UserRepository userRepository;
 
     @Autowired
-    private com.example.demo.JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
