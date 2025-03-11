@@ -9,4 +9,8 @@ public class AuthRequest {
 
     public AuthRequest(String mail, String password) {
     }
+
+    public AuthRequest() {
+
+    }
 }
