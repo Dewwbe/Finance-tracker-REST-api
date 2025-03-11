@@ -4,6 +4,7 @@ package com.example.demo.Service;
 import com.example.demo.DTO.AuthRequest;
 import com.example.demo.DTO.AuthResponse;
 import com.example.demo.DTO.RegisterRequest;
+import com.example.demo.Model.User;
 import com.example.demo.Repository.UserRepository;
 import com.example.demo.Utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,5 +51,20 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(user.getEmail());
         return new AuthResponse(token);
+    }
+
+    //Get all users**
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    // **NEW METHOD: Delete user by ID**
+    public String deleteUserById(String id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return "User deleted successfully";
+        } else {
+            throw new RuntimeException("User not found");
+        }
     }
 }

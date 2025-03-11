@@ -1,11 +1,11 @@
 package com.example.demo.Controllers;
 
+import com.example.demo.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,5 +22,17 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<com.example.demo.DTO.AuthResponse> login(@RequestBody com.example.demo.DTO.AuthRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    // **NEW ENDPOINT: Get all users**
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(authService.getAllUsers());
+    }
+
+    // **NEW ENDPOINT: Delete a user by ID**
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable String id) {
+        return ResponseEntity.ok(authService.deleteUserById(id));
     }
 }
