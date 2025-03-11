@@ -49,4 +49,19 @@ public class TransactionController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    // Get transactions by userId
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Transaction>> getTransactionsByUserId(@PathVariable String userId) {
+        List<Transaction> transactions = transactionService.getTransactionsByUserId(userId);
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
+    }
+
+    // Get transactions by userId and recurrencePattern
+    @GetMapping("/user/{userId}/recurrence/{recurrencePattern}")
+    public ResponseEntity<List<Transaction>> getTransactionsByUserIdAndRecurrencePattern(
+            @PathVariable String userId, @PathVariable String recurrencePattern) {
+        List<Transaction> transactions = transactionService.getTransactionsByUserIdAndRecurrencePattern(userId, recurrencePattern);
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
+    }
 }
