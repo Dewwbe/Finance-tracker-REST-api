@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -39,15 +40,19 @@ public class TransactionController {
         return new ResponseEntity<>(savedTransaction, HttpStatus.CREATED);
     }
 
+    // ✅ Update a transaction
+    @PutMapping("/{id}")
+    public ResponseEntity<Transaction> updateTransaction(@PathVariable String id, @RequestBody Transaction updatedTransaction) {
+        Optional<Transaction> transaction = transactionService.updateTransaction(id, updatedTransaction);
+        return transaction.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     // Delete a transaction by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable String id) {
         boolean deleted = transactionService.deleteTransaction(id);
-        if (deleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return deleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     // Get transactions by userId
@@ -64,4 +69,31 @@ public class TransactionController {
         List<Transaction> transactions = transactionService.getTransactionsByUserIdAndRecurrencePattern(userId, recurrencePattern);
         return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
+
+    // ✅ Get transactions by userId and type (income/expense)
+    @GetMapping("/user/{userId}/incomeExpense/{incomeExpense}")
+    public ResponseEntity<List<Transaction>> getTransactionsByUserIdAndType(
+            @PathVariable String userId, @PathVariable String incomeExpense) {
+        List<Transaction> transactions = transactionService.getTransactionsByUserIdAndType(userId, incomeExpense);
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
+    }
+    // ✅ Get total income and expense separately for a user
+    @GetMapping("/user/{userId}/totals")
+    public ResponseEntity<?> getTotalIncomeAndExpenseByUserId(@PathVariable String userId) {
+        double totalIncome = transactionService.calculateTotalByUserIdAndType(userId, "income");
+        double totalExpense = transactionService.calculateTotalByUserIdAndType(userId, "expense");
+
+        return ResponseEntity.ok(Map.of(
+                "totalIncome", totalIncome,
+                "totalExpense", totalExpense
+        ));
+    }
+    @GetMapping("/user/{userId}/income-expense-difference")
+    public ResponseEntity<String> getIncomeExpenseDifference(@PathVariable String userId) {
+        String result = transactionService.calculateIncomeExpenseDifference(userId);
+        return ResponseEntity.ok(result);
+    }
+
+
+
 }

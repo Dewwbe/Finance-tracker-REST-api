@@ -25,4 +25,5 @@ public class Budget {
     private double goal; // Extra goal
 
     private String goalDuration; // (week, month, year)
+    private String userId;
 }
